@@ -1,20 +1,32 @@
 package play.modules.guice;
 
-import com.google.inject.*;
-import com.google.inject.name.Named;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import play.Play;
-import play.PlayPlugin;
-import play.inject.BeanSource;
-import play.mvc.Http;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.inject.AbstractModule;
+import com.google.inject.BindingAnnotation;
+import com.google.inject.ConfigurationException;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.Module;
+
+import play.Play;
+import play.PlayPlugin;
+import play.inject.BeanSource;
+import play.mvc.Http;
+
+import javax.inject.Named;
 
 /**
  * Enable <a href="http://google-guice.googlecode.com">Guice</a> integration in
@@ -117,7 +129,12 @@ public class GuicePlugin extends PlayPlugin implements BeanSource {
 
   private void injectAnnotated() {
     try {
-      for (Class<?> clazz : Play.classloader.getAnnotatedClasses(play.modules.guice.InjectSupport.class)) {
+      Set<Class> classes = new HashSet<>();
+      classes.addAll(Play.classloader.getAnnotatedClasses(play.modules.guice.InjectSupport.class));
+      classes.addAll(Play.classloader.getAnnotatedClasses(javax.inject.Named.class));
+      classes.addAll(new Reflections("play").getTypesAnnotatedWith(Named.class));
+
+      for (Class<?> clazz : classes) {
         for (Field field : clazz.getDeclaredFields()) {
           if (isInjectable(field)) {
             inject(field);
@@ -159,5 +176,4 @@ public class GuicePlugin extends PlayPlugin implements BeanSource {
     }
     return null;
   }
-
 }

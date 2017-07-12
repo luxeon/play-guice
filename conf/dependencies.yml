@@ -8,3 +8,7 @@ require:
         transitive: false
     - aopalliance 1.0:
         transitive: false
+    - org.reflections -> reflections 0.9.11
+    - com.google.guava -> guava 22.0
+
+
