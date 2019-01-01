@@ -1,5 +1,11 @@
 ## Changelog
 
+### 1.10-patched
+
+  * upgrade to guice 4.2.2
+  * upgrade to guava 27.0.1-jre
+  * add slf4j and javax.inject dependencies
+
 ### 1.10
 
 Move creation of guice injector from `onConfigurationRead()` to `onApplicationStart()`.
