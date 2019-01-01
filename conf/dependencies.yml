@@ -1,4 +1,4 @@
-self: play -> guice 1.8
+self: play-guice -> guice 1.10
 
 require:
     - play 1.5.+
@@ -10,4 +10,4 @@ require:
         transitive: false
     - org.reflections -> reflections 0.9.11:
         transitive: false
-    - com.google.guava -> guava 20.0
+    - com.google.guava -> guava 23.0

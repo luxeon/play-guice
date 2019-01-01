@@ -38,15 +38,12 @@ public class GuicePlugin extends PlayPlugin implements BeanSource {
 
   @Override
   public void onApplicationStart() {
-    logger.debug("Starting Guice modules scanning");
+    logger.debug("Starting Guice modules injecting");
     loadInjector();
+    play.inject.Injector.setBeanSource(this);
     play.inject.Injector.inject(this);
     injectAnnotated();
-  }
-
-  @Override public void beforeActionInvocation(Method actionMethod) {
-    Http.Request request = Http.Request.current();
-    if (request.controllerInstance == null) request.controllerInstance = getBeanOfType(request.controllerClass);
+    injectPlayPlugins();
   }
 
   private void loadInjector() {
@@ -131,6 +128,12 @@ public class GuicePlugin extends PlayPlugin implements BeanSource {
     }
     catch (Exception e) {
       throw new RuntimeException("Error injecting dependencies", e);
+    }
+  }
+
+  private void injectPlayPlugins() {
+    for (PlayPlugin plugin : Play.pluginCollection.getAllPlugins()) {
+      injector.injectMembers(plugin);
     }
   }
 
