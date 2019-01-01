@@ -1,13 +1,13 @@
-self: play -> guice 1.8
+self: play -> guice 1.10-patched
 
 require:
     - play 1.5.+
-    - com.google.inject -> guice 4.1.0:
+    - com.google.inject -> guice 4.2.2:
         transitive: false
-    - com.google.inject.extensions -> guice-multibindings 4.1.0:
+    - com.google.inject.extensions -> guice-multibindings 4.2.2:
         transitive: false
     - aopalliance 1.0:
         transitive: false
     - org.reflections -> reflections 0.9.11:
         transitive: false
-    - com.google.guava -> guava 20.0
+    - com.google.guava -> guava 27.0.1-jre
