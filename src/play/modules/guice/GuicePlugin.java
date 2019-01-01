@@ -2,11 +2,13 @@ package play.modules.guice;
 
 import com.google.inject.*;
 import com.google.inject.name.Named;
+import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import play.Play;
 import play.PlayPlugin;
 import play.inject.BeanSource;
+import play.inject.RequireInjection;
 import play.mvc.Http;
 
 import java.lang.annotation.Annotation;
@@ -30,9 +32,9 @@ import java.util.List;
  */
 public class GuicePlugin extends PlayPlugin implements BeanSource {
   private static final Logger logger = LoggerFactory.getLogger(GuicePlugin.class);
-  
+
   Injector injector;
-  private final List<Module> modules = new ArrayList<Module>();
+  private final List<Module> modules = new ArrayList<>();
 
   @Override
   public void onApplicationStart() {
@@ -94,7 +96,7 @@ public class GuicePlugin extends PlayPlugin implements BeanSource {
     return moduleList.toString();
   }
 
-  @Override 
+  @Override
   public <T> T getBeanOfType(Class<T> clazz) {
     if (injector == null) {
       return null;
@@ -117,7 +119,9 @@ public class GuicePlugin extends PlayPlugin implements BeanSource {
 
   private void injectAnnotated() {
     try {
-      for (Class<?> clazz : Play.classloader.getAnnotatedClasses(play.modules.guice.InjectSupport.class)) {
+      List<Class> injectSupportClasses = Play.classloader.getAnnotatedClasses(InjectSupport.class);
+      injectSupportClasses.addAll(new Reflections("play.modules").getTypesAnnotatedWith(RequireInjection.class));
+      for (Class<?> clazz : injectSupportClasses) {
         for (Field field : clazz.getDeclaredFields()) {
           if (isInjectable(field)) {
             inject(field);
@@ -131,7 +135,7 @@ public class GuicePlugin extends PlayPlugin implements BeanSource {
   }
 
   private boolean isInjectable(Field field) {
-    return Modifier.isStatic(field.getModifiers()) && 
+    return Modifier.isStatic(field.getModifiers()) &&
         (field.isAnnotationPresent(javax.inject.Inject.class) || field.isAnnotationPresent(com.google.inject.Inject.class));
   }
 
