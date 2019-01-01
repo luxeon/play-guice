@@ -1,4 +1,4 @@
-self: play-guice -> guice 1.10-patched
+self: play -> guice 1.10-patched
 
 require:
     - play 1.5.+
