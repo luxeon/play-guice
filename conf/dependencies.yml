@@ -11,3 +11,7 @@ require:
     - org.reflections -> reflections 0.9.11:
         transitive: false
     - com.google.guava -> guava 23.0
+    - org.slf4j -> slf4j-api 1.7.25:
+        transitive: false
+    - javax.inject -> javax.inject 1:
+        transitive: false
